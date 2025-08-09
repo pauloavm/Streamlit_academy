@@ -8,28 +8,31 @@ st.set_page_config(layout="wide")
 
 
 # --- 2. CARREGAMENTO E CACHE DOS DADOS ---
+import pandas as pd
+import streamlit as st
+
+
 @st.cache_data
 def carregar_dados():
     """
-    Função para carregar e transformar os dados da planilha Excel.
+    Carrega e transforma os dados da planilha GERAL_AGENDAMENTOS_FICTICIOS.xlsx.
     """
-    try:
-        df = pd.read_excel("GERAL_AGENDAMENTOS_FICTICIOS.xlsx")
-    except FileNotFoundError:
-        st.error(
-            "Arquivo 'GERAL_AGENDAMENTOS_reais.xlsx' não encontrado. Carregando dados de exemplo."
-        )
-        df = pd.read_excel("GERAL_AGENDAMENTOS_FICTICIOS.xlsx")
+    # Carrega o arquivo diretamente
+    df = pd.read_excel("GERAL_AGENDAMENTOS_FICTICIOS.xlsx")
 
+    # Aplica as transformações necessárias
     df["Valor"] = pd.to_numeric(df["Valor"], errors="coerce")
     df["Data"] = pd.to_datetime(df["Data"], errors="coerce")
     df.dropna(subset=["Data"], inplace=True)
     df["Ano"] = df["Data"].dt.year
     df["Mês"] = df["Data"].dt.to_period("M").astype(str)
+
     return df
 
 
+# Uso da função
 df_original = carregar_dados()
+
 
 # --- 3. BARRA LATERAL (FILTROS) ---
 st.sidebar.image("logo_DonMunhoz_semFundo.png", use_container_width=True)

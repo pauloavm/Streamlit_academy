@@ -11,10 +11,10 @@ def carregar_dados():
     Mostra um erro e para o app se o arquivo não for encontrado.
     """
     try:
-        df = pd.read_excel("GERAL_AGENDAMENTOS_FICTICIOS.xlsx")
+        df = pd.read_excel("GERAL_AGENDAMENTOS.xlsx")
     except FileNotFoundError:
         st.error(
-            "Arquivo 'GERAL_AGENDAMENTOS_FICTICIOS.xlsx' não encontrado! Verifique se ele está na mesma pasta do script."
+            "Arquivo 'GERAL_AGENDAMENTOS.xlsx' não encontrado! Verifique se ele está na mesma pasta do script."
         )
         st.stop()  # Interrompe a execução do script de forma limpa
 

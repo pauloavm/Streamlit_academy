@@ -12,11 +12,11 @@ def carregar_dados():
     """
     try:
         df = pd.read_excel(
-            "pauloavm/streamlit_academy/main/Analise_Barbearia/GERAL_AGENDAMENTOS.xlsx"
+            "AGENDAMENTOS.xlsx"
         )
     except FileNotFoundError:
         st.error(
-            "Arquivo 'GERAL_AGENDAMENTOS.xlsx' não encontrado! Verifique se ele está na mesma pasta do script."
+            "Arquivo 'AGENDAMENTOS.xlsx' não encontrado! Verifique se ele está na mesma pasta do script."
         )
         st.stop()  # Interrompe a execução do script de forma limpa
 

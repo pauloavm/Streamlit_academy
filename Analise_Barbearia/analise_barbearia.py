@@ -3,20 +3,28 @@ import streamlit as st
 import plotly.express as px
 from datetime import datetime
 
-# --- 1. CONFIGURAÇÃO DA PÁGINA ---
-st.set_page_config(layout="wide")
-
 
 @st.cache_data
 def carregar_dados():
+    """
+    Carrega e transforma os dados da planilha Excel.
+    Mostra um erro e para o app se o arquivo não for encontrado.
+    """
+    try:
+        df = pd.read_excel("GERAL_AGENDAMENTOS_FICTICIOS.xlsx")
+    except FileNotFoundError:
+        st.error(
+            "Arquivo 'GERAL_AGENDAMENTOS_FICTICIOS.xlsx' não encontrado! Verifique se ele está na mesma pasta do script."
+        )
+        st.stop()  # Interrompe a execução do script de forma limpa
 
-    # Carrega o arquivo diretamente
-    df = pd.read_excel("GERAL_AGENDAMENTOS.xlsx")
-
-    # Aplica as transformações necessárias
-    df["Valor"] = pd.to_numeric(df["Valor"], errors="coerce")
+    # Aplica as transformações de forma encadeada para maior clareza
     df["Data"] = pd.to_datetime(df["Data"], errors="coerce")
+    df["Valor"] = pd.to_numeric(df["Valor"], errors="coerce")
+
+    # Remove linhas onde a data é inválida, pois são essenciais para as análises
     df.dropna(subset=["Data"], inplace=True)
+
     df["Ano"] = df["Data"].dt.year
     df["Mês"] = df["Data"].dt.to_period("M").astype(str)
 
@@ -26,6 +34,9 @@ def carregar_dados():
 # Uso da função
 df_original = carregar_dados()
 
+# O código abaixo só será executado se o arquivo for carregado com sucesso
+st.header("Análise de Agendamentos")
+st.dataframe(df_original.head())
 
 # --- 3. BARRA LATERAL (FILTROS) ---
 st.sidebar.image("logo_DonMunhoz_semFundo.png", use_container_width=True)

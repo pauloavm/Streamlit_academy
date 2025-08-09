@@ -7,18 +7,11 @@ from datetime import datetime
 st.set_page_config(layout="wide")
 
 
-# --- 2. CARREGAMENTO E CACHE DOS DADOS ---
-import pandas as pd
-import streamlit as st
-
-
 @st.cache_data
 def carregar_dados():
-    """
-    Carrega e transforma os dados da planilha GERAL_AGENDAMENTOS_FICTICIOS.xlsx.
-    """
+
     # Carrega o arquivo diretamente
-    df = pd.read_excel("GERAL_AGENDAMENTOS_FICTICIOS.xlsx")
+    df = pd.read_excel("GERAL_AGENDAMENTOS.xlsx")
 
     # Aplica as transformações necessárias
     df["Valor"] = pd.to_numeric(df["Valor"], errors="coerce")

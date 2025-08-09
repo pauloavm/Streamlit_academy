@@ -4,6 +4,11 @@ import plotly.express as px
 from datetime import datetime
 
 
+# --- 1. CONFIGURAÇÃO DA PÁGINA ---
+st.set_page_config(layout="wide")
+
+
+# 2--------- CONFIGURAÇÕES INICIAIS ---
 @st.cache_data
 def carregar_dados():
     """
@@ -11,9 +16,7 @@ def carregar_dados():
     Mostra um erro e para o app se o arquivo não for encontrado.
     """
     try:
-        df = pd.read_excel(
-            "AGENDAMENTOS.xlsx"
-        )
+        df = pd.read_excel("AGENDAMENTOS.xlsx")
     except FileNotFoundError:
         st.error(
             "Arquivo 'AGENDAMENTOS.xlsx' não encontrado! Verifique se ele está na mesma pasta do script."
@@ -36,9 +39,6 @@ def carregar_dados():
 # Uso da função
 df_original = carregar_dados()
 
-# O código abaixo só será executado se o arquivo for carregado com sucesso
-st.header("Análise de Agendamentos")
-st.dataframe(df_original.head())
 
 # --- 3. BARRA LATERAL (FILTROS) ---
 st.sidebar.image("logo_DonMunhoz_semFundo.png", use_container_width=True)

@@ -109,7 +109,7 @@ st.markdown("---")
 # --- 6. GRÁFICOS E VISUALIZAÇÕES ---
 
 # Pergunta 1: Qual o faturamento total por serviço e por profissional?
-st.subheader("Análise de Faturamento por Profissional e Serviço")
+st.subheader("Faturamento por Profissional e Serviço")
 if not df_realizado.empty:
     fig_faturamento_prof = px.bar(
         df_realizado,
@@ -135,7 +135,7 @@ st.markdown("---")
 
 
 # GRÁFICO DE FATURAMENTO POR SERVIÇO
-st.subheader("Análise de Faturamento por Serviço")
+st.subheader("Faturamento por Serviço no Período")
 if not df_realizado.empty:
     faturamento_por_servico = (
         df_realizado.groupby("Serviço")["Valor"].sum().sort_values(ascending=True)
@@ -158,7 +158,7 @@ st.markdown("---")
 
 
 # Pergunta 2: Qual a taxa de cancelamento e ausência?
-st.subheader("Análise de Cancelamentos e Ausências")
+st.subheader("Cancelamentos e Ausências")
 if not df_filtrado.empty:
     col_taxa1, col_taxa2 = st.columns(2)
     with col_taxa1:
@@ -193,7 +193,7 @@ st.markdown("---")
 
 
 # Pergunta 3: Quais são os dias da semana e horários de maior movimento?
-st.subheader("Análise de Fluxo de Clientes")
+st.subheader("Fluxo de Clientes")
 if df_filtrado.empty:
     st.warning(
         "Nenhum dado de fluxo de clientes encontrado para os filtros selecionados."
@@ -265,7 +265,7 @@ else:
 st.markdown("---")
 
 # Pergunta 5: Quem são os clientes mais frequentes?
-st.subheader("Top Clientes")
+st.subheader("Top Clientes por Período")
 if not df_realizado.empty:
     df_clientes_reais = df_realizado[df_realizado["Cliente"] != "Sem Cadastro"]
     if not df_clientes_reais.empty:

@@ -96,7 +96,7 @@ df = pd.DataFrame(sales_data)
 nome_arquivo = "vendas_eletronicos.csv"
 
 # O DataFrame 'df' é criado...
-df.to_csv(nome_arquivo, index=False)
+df.to_csv(nome_arquivo, index=False, encoding="utf-8")
 
 # Exibir informações sobre a base de dados criada
 print(

@@ -49,26 +49,26 @@ for category, products in produtos_eletronicos.items():
 
 # Função para gerar um único registro de venda
 def generate_sale_record(sale_id):
-    # Selecionar uma localidade aleatória para os dados do cliente
     locale = random.choice(locales)
     faker_locale = Faker(locale)
 
     customer_name = faker_locale.name()
-    customer_email = faker_locale.email()
-    customer_country = faker_locale.country()
+    try:
+        first_name = faker_locale.first_name().lower()
+        last_name = faker_locale.last_name().lower()
+        email_domains = ["gmail.com", "outlook.com", "yahoo.com", "hotmail.com"]
+        customer_email = f"{first_name}.{last_name}@{random.choice(email_domains)}"
+    except AttributeError:
+        customer_email = faker_locale.email()
 
-    # Gerar uma data de venda aleatória no último ano
+    customer_country = faker_locale.country()
     end_date = datetime.now()
     start_date = end_date - timedelta(days=365)
     sale_date = faker.date_time_between(start_date=start_date, end_date=end_date)
-
-    # Selecionar um produto aleatório da nossa lista
     selected_product = random.choice(all_products)
     product_category = selected_product["categoria"]
     product_name = selected_product["produto"]
     product_price = selected_product["preco_unitario"]
-
-    # Gerar quantidade e calcular o total da venda
     quantity = random.randint(1, 5)
     total_sale = round(product_price * quantity, 2)
 
@@ -87,20 +87,26 @@ def generate_sale_record(sale_id):
     }
 
 
-# Gerar 10.000 registros de vendas
-num_records = int(
-    input("Insira a quantidade de registros que deseja criar: ")
-)  # alterar para o número desejado
+# Lógica para obter a quantidade de registros do usuário
+try:
+    num_records_input = input("Insira a quantidade de registros que deseja criar: ")
+    num_records = int(num_records_input) if num_records_input.strip() else 10000
+except (ValueError, EOFError):
+    num_records = 10000
+
 sales_data = [generate_sale_record(i) for i in range(1, num_records + 1)]
-
-# Criar o DataFrame com Pandas
 df = pd.DataFrame(sales_data)
-nome_arquivo = "vendas_eletronicos.csv"
 
-# O DataFrame 'df' é criado...
+# NOVO CÓDIGO AQUI: Permite ao usuário inserir o nome do arquivo
+nome_arquivo = input("Insira o nome do arquivo (ex: 'meu_arquivo'): ")
+
+# Garante que o nome do arquivo termine com a extensão .csv
+if not nome_arquivo.endswith(".csv"):
+    nome_arquivo += ".csv"
+
+# Salvar o DataFrame no arquivo com o nome fornecido pelo usuário
 df.to_csv(nome_arquivo, index=False, encoding="utf-8")
 
-# Exibir informações sobre a base de dados criada
 print(
     f"A base de dados '{nome_arquivo}' foi criada com sucesso com {num_records} registros."
 )

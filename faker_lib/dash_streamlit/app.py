@@ -99,44 +99,63 @@ else:
     # --- Visualizações ---
     st.header("Análise de Vendas")
 
-    # Vendas totais por mês (agora um gráfico de barras)
-    st.subheader("Vendas Totais por Mês")
-    vendas_por_mes = (
-        df_filtrado.groupby(["Ano", "Mês"])["Total_Venda"].sum().reset_index()
-    )
-    vendas_por_mes["Data"] = (
-        vendas_por_mes["Ano"].astype(str) + "-" + vendas_por_mes["Mês"].astype(str)
-    )
-    fig_mes = px.bar(
-        vendas_por_mes,
-        x="Data",
-        y="Total_Venda",
-        title="Vendas Totais por Mês",
-        color="Ano",
-        labels={"Data": "Ano-Mês", "Total_Venda": "Vendas Totais ($)"},
-        color_discrete_sequence=px.colors.qualitative.Plotly,
-    )
-    st.plotly_chart(fig_mes, use_container_width=True)
+    # Criar colunas para colocar os gráficos lado a lado
+    col1, col2 = st.columns(2)
 
-    # Top 5 Produtos por Vendas (valor total)
-    st.subheader("Top 5 Produtos por Vendas")
-    top_produtos_valor = (
-        df_filtrado.groupby("Produto")["Total_Venda"].sum().nlargest(5).reset_index()
-    )
-    fig_prod_valor = px.bar(
-        top_produtos_valor,
-        x="Total_Venda",
-        y="Produto",
-        title="Top 5 Produtos por Vendas",
-        orientation="h",
-        color="Produto",
-        labels={"Total_Venda": "Vendas Totais ($)", "Produto": "Produto"},
-        color_discrete_sequence=px.colors.qualitative.Vivid,
-    )
-    fig_prod_valor.update_layout(yaxis={"categoryorder": "total ascending"})
-    st.plotly_chart(fig_prod_valor, use_container_width=True)
+    # Vendas totais por mês (no primeiro gráfico)
+    with col1:
+        st.subheader("Vendas Totais por Ano")
+        vendas_por_mes = df_filtrado.groupby(["Ano"])["Total_Venda"].sum().reset_index()
+        vendas_por_mes["Data"] = vendas_por_mes["Ano"].astype(str)
+        fig_mes = px.bar(
+            vendas_por_mes,
+            x="Data",
+            y="Total_Venda",
+            title="Vendas Totais por Mês",
+            color="Ano",
+            labels={"Data": "Ano-Mês", "Total_Venda": "Vendas Totais ($)"},
+            color_discrete_sequence=px.colors.qualitative.Plotly,
+        )
+        st.plotly_chart(fig_mes, use_container_width=True)
 
-    # Top 5 Produtos por Quantidade Vendida
+    # Top 5 Produtos por Vendas (no segundo gráfico)
+    with col2:
+        st.subheader("Top 5 Produtos por Vendas")
+        top_produtos_valor = (
+            df_filtrado.groupby("Produto")["Total_Venda"]
+            .sum()
+            .nlargest(5)
+            .reset_index()
+        )
+        fig_prod_valor = px.bar(
+            top_produtos_valor,
+            x="Total_Venda",
+            y="Produto",
+            title="Top 5 Produtos por Vendas",
+            orientation="h",
+            color="Produto",
+            labels={"Total_Venda": "Vendas Totais ($)", "Produto": "Produto"},
+            color_discrete_sequence=px.colors.qualitative.Vivid,
+        )
+        fig_prod_valor.update_layout(yaxis={"categoryorder": "total ascending"})
+        st.plotly_chart(fig_prod_valor, use_container_width=True)
+
+    # Vendas por País (agora um mapa interativo, logo abaixo dos dois primeiros)
+    st.subheader("Vendas por País")
+    vendas_por_pais = df_filtrado.groupby("País")["Total_Venda"].sum().reset_index()
+    fig_mapa = px.choropleth(
+        vendas_por_pais,
+        locations="País",
+        locationmode="country names",
+        color="Total_Venda",
+        hover_name="País",
+        color_continuous_scale=px.colors.sequential.Plasma,
+        title="Vendas Totais por País",
+        labels={"Total_Venda": "Vendas Totais ($)"},
+    )
+    st.plotly_chart(fig_mapa, use_container_width=True)
+
+    # Os outros gráficos seguem a ordem normal, abaixo do mapa
     st.subheader("Top 5 Produtos por Quantidade")
     top_produtos_qtd = (
         df_filtrado.groupby("Produto")["Quantidade"].sum().nlargest(5).reset_index()
@@ -154,7 +173,6 @@ else:
     fig_prod_qtd.update_layout(yaxis={"categoryorder": "total ascending"})
     st.plotly_chart(fig_prod_qtd, use_container_width=True)
 
-    # Top 5 Clientes por Vendas (agora um gráfico de barras)
     st.subheader("Top 5 Clientes")
     top_clientes_vendas = (
         df_filtrado.groupby("Nome_Cliente")["Total_Venda"]
@@ -175,22 +193,6 @@ else:
     fig_clientes.update_layout(yaxis={"categoryorder": "total ascending"})
     st.plotly_chart(fig_clientes, use_container_width=True)
 
-    # Vendas por País (agora um mapa interativo)
-    st.subheader("Vendas por País")
-    vendas_por_pais = df_filtrado.groupby("País")["Total_Venda"].sum().reset_index()
-    fig_mapa = px.choropleth(
-        vendas_por_pais,
-        locations="País",
-        locationmode="country names",
-        color="Total_Venda",
-        hover_name="País",
-        color_continuous_scale=px.colors.sequential.Plasma,
-        title="Vendas Totais por País",
-        labels={"Total_Venda": "Vendas Totais ($)"},
-    )
-    st.plotly_chart(fig_mapa, use_container_width=True)
-
-    # Preço Unitário Médio por Categoria (agora um gráfico de barras)
     st.subheader("Preço Médio por Categoria")
     preco_medio_categoria = (
         df_filtrado.groupby("Categoria_Produto")["Preço_Unitário"]

@@ -44,31 +44,57 @@ for category, products in produtos_eletronicos.items():
         )
 
 
-# Função para gerar um único registro de venda
-def generate_sale_record(sale_id):
+# Função para gerar um email a partir de um nome, garantindo que seja único
+def generate_customer_email(customer_name, existing_emails):
+    name_parts = customer_name.lower().split()
+    first_name = name_parts[0]
+    last_name = name_parts[-1] if len(name_parts) > 1 else ""
+    email_domains = ["gmail.com", "outlook.com", "yahoo.com", "hotmail.com"]
+    base_email = f"{first_name}.{last_name}".replace(" ", "")
+    email_domain = random.choice(email_domains)
+    customer_email = f"{base_email}@{email_domain}"
+
+    # Garantir que o email seja único
+    counter = 1
+    while customer_email in existing_emails:
+        customer_email = f"{base_email}{counter}@{email_domain}"
+        counter += 1
+    return customer_email
+
+
+# Função para gerar um cliente
+def generate_customer(existing_customers_emails):
     locale = random.choice(locales)
     faker_locale = Faker(locale)
-
     customer_name = faker_locale.name()
-
-    # Criando o email a partir do nome do cliente
-    try:
-        name_parts = customer_name.lower().split()
-        first_name = name_parts[0]
-        last_name = name_parts[-1]
-        email_domains = ["gmail.com", "outlook.com", "yahoo.com", "hotmail.com"]
-        customer_email = f"{first_name}.{last_name}@{random.choice(email_domains)}"
-    except IndexError:
-        # Caso o nome tenha apenas uma parte, gera um email mais simples
-        customer_email = (
-            f"{customer_name.lower().replace(' ', '')}@{random.choice(email_domains)}"
-        )
-
+    customer_email = generate_customer_email(customer_name, existing_customers_emails)
     customer_country = faker_locale.country()
-    end_date = datetime.now()
-    start_date = end_date - timedelta(days=365)
+
+    return {
+        "ID_Cliente": faker.uuid4(),
+        "Nome_Cliente": customer_name,
+        "Email_Cliente": customer_email,
+        "País": customer_country,
+    }
+
+
+# Função para gerar um único registro de venda
+def generate_sale_record(sale_id, start_date, end_date, customers_pool):
+
+    # Lógica para escolher um cliente existente ou criar um novo
+    if (
+        random.random() < 0.7 and customers_pool
+    ):  # 70% de chance de ser cliente recorrente
+        customer = random.choice(customers_pool)
+    else:
+        # Se for um novo cliente, criamos um e adicionamos ao pool
+        new_customer = generate_customer([c["Email_Cliente"] for c in customers_pool])
+        customers_pool.append(new_customer)
+        customer = new_customer
+
     sale_date = faker.date_time_between(start_date=start_date, end_date=end_date)
     selected_product = random.choice(all_products)
+
     product_category = selected_product["categoria"]
     product_name = selected_product["produto"]
     product_price = selected_product["preco_unitario"]
@@ -78,10 +104,10 @@ def generate_sale_record(sale_id):
     return {
         "ID_Venda": sale_id,
         "Data_Venda": sale_date.strftime("%Y-%m-%d %H:%M:%S"),
-        "ID_Cliente": faker.uuid4(),
-        "Nome_Cliente": customer_name,
-        "Email_Cliente": customer_email,
-        "País": customer_country,
+        "ID_Cliente": customer["ID_Cliente"],
+        "Nome_Cliente": customer["Nome_Cliente"],
+        "Email_Cliente": customer["Email_Cliente"],
+        "País": customer["País"],
         "Categoria_Produto": product_category,
         "Produto": product_name,
         "Preço_Unitário": product_price,
@@ -90,19 +116,44 @@ def generate_sale_record(sale_id):
     }
 
 
-# Aqui o usuário insere o nome do arquivo
+# Coleta de informações do usuário
 nome_arquivo = input("Insira o nome do arquivo (ex: 'meu_arquivo.csv'): ")
 
-# Lógica para obter a quantidade de registros do usuário
 try:
     num_records_input = input("Insira a quantidade de registros que deseja criar: ")
     num_records = int(num_records_input) if num_records_input.strip() else 10000
+
+    # --- INÍCIO DAS MODIFICAÇÕES ---
+    year_start_input = input("Insira o ano de início para as vendas (ex: '2020'): ")
+    year_end_input = input("Insira o ano de fim para as vendas (ex: '2023'): ")
+
+    # Define valores padrão caso o usuário não insira nada
+    year_start = int(year_start_input) if year_start_input.strip() else 2020
+    year_end = int(year_end_input) if year_end_input.strip() else datetime.now().year
+
+    start_date = datetime(year_start, 1, 1)
+    end_date = datetime(year_end, 12, 31)
+
+    # --- FIM DAS MODIFICAÇÕES ---
+
 except (ValueError, EOFError):
     num_records = 10000
+    start_date = datetime(2020, 1, 1)
+    end_date = datetime.now()
 
-sales_data = [generate_sale_record(i) for i in range(1, num_records + 1)]
+# --- INÍCIO DAS MODIFICAÇÕES ---
+# Pool de clientes
+customers_pool = []
+
+# --- FIM DAS MODIFICAÇÕES ---
+
+# Geração dos dados de venda
+sales_data = [
+    generate_sale_record(i, start_date, end_date, customers_pool)
+    for i in range(1, num_records + 1)
+]
+
 df = pd.DataFrame(sales_data)
-
 
 # Garante que o nome do arquivo termine com a extensão .csv
 if not nome_arquivo.endswith(".csv"):

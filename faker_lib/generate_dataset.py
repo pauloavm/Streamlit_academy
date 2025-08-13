@@ -53,13 +53,19 @@ def generate_sale_record(sale_id):
     faker_locale = Faker(locale)
 
     customer_name = faker_locale.name()
+
+    # Criando o email a partir do nome do cliente
     try:
-        first_name = faker_locale.first_name().lower()
-        last_name = faker_locale.last_name().lower()
+        name_parts = customer_name.lower().split()
+        first_name = name_parts[0]
+        last_name = name_parts[-1]
         email_domains = ["gmail.com", "outlook.com", "yahoo.com", "hotmail.com"]
         customer_email = f"{first_name}.{last_name}@{random.choice(email_domains)}"
-    except AttributeError:
-        customer_email = faker_locale.email()
+    except IndexError:
+        # Caso o nome tenha apenas uma parte, gera um email mais simples
+        customer_email = (
+            f"{customer_name.lower().replace(' ', '')}@{random.choice(email_domains)}"
+        )
 
     customer_country = faker_locale.country()
     end_date = datetime.now()
@@ -98,7 +104,7 @@ sales_data = [generate_sale_record(i) for i in range(1, num_records + 1)]
 df = pd.DataFrame(sales_data)
 
 # NOVO CÓDIGO AQUI: Permite ao usuário inserir o nome do arquivo
-nome_arquivo = input("Insira o nome do arquivo (ex: 'meu_arquivo'): ")
+nome_arquivo = input("Insira o nome do arquivo (ex: 'meu_arquivo.csv'): ")
 
 # Garante que o nome do arquivo termine com a extensão .csv
 if not nome_arquivo.endswith(".csv"):

@@ -88,7 +88,9 @@ def generate_sale_record(sale_id):
 
 
 # Gerar 10.000 registros de vendas
-num_records = 10000  # alterar para o número desejado
+num_records = int(
+    input("Insira a quantidade de registros que deseja criar: ")
+)  # alterar para o número desejado
 sales_data = [generate_sale_record(i) for i in range(1, num_records + 1)]
 
 # Criar o DataFrame com Pandas

@@ -1,0 +1,11 @@
+ID_Venda,Data_Venda,ID_Cliente,Nome_Cliente,Email_Cliente,País,Categoria_Produto,Produto,Preço_Unitário,Quantidade,Total_Venda
+1,2025-02-24 04:43:07,667a825a-5bec-4d9e-852c-3c5daf6b518b,Patricia Artigas Badía,patricia.badía@outlook.com,Reino Unido de Gran Bretaña e Irlanda del Norte,Acessórios,Smartwatch,150.0,3,450.0
+2,2025-04-23 20:10:23,4b7746b2-e9d4-4bd6-bd81-4e67e75985f4,Jamie Hill,jamie.hill@outlook.com,Seychelles,Acessórios,Smartwatch,150.0,3,450.0
+3,2025-03-26 08:11:27,208362cb-ab79-4bd3-ab67-dab2af4ff655,Valerio Grossi-Soffici,valerio.grossi-soffici@gmail.com,Nuova Zelanda,Celulares,OnePlus 10 Pro,750.0,3,2250.0
+4,2025-08-05 21:18:57,cf68fcc5-1e7c-4445-9599-35f0d352ba32,Gil Paiva-Baptista,gil.paiva-baptista@gmail.com,Guiné,Celulares,Xiaomi 12,599.0,4,2396.0
+5,2025-06-03 13:05:29,8495274d-ca50-4ca6-8ca6-dfae48ef60ef,Arthur da Cruz,arthur.cruz@yahoo.com,Birmânia,Acessórios,Power Bank 10000mAh,30.0,1,30.0
+6,2025-04-02 06:39:18,ffa9e0e9-a165-4838-b1f2-cceb14e92749,Jason Kelley,jason.kelley@yahoo.com,Equatorial Guinea,Acessórios,Capa de Silicone,15.0,2,30.0
+7,2024-12-23 20:02:55,ebf2d676-3493-4c27-ae5b-05a52ad29883,Artur Gaspar,artur.gaspar@gmail.com,Alemanha,Acessórios,Power Bank 10000mAh,30.0,5,150.0
+8,2024-12-07 23:34:56,e0b8c43d-a46c-46bf-8d35-4a755502173d,João Lucas Marques,joão.marques@yahoo.com,Territórios Austrais Franceses,Celulares,OnePlus 10 Pro,750.0,3,2250.0
+9,2025-06-14 19:36:47,854eaf2d-cb22-408b-9bf0-9c827ce7af77,Scott Campbell,scott.campbell@yahoo.com,Bhutan,Celulares,iPhone 13,850.0,5,4250.0
+10,2025-08-06 17:52:27,2cf880bd-4199-4c0b-946b-9636b19a1693,Фомин Сильвестр Феофанович,фомин.феофанович@gmail.com,Сан-Томе и Принсипи,Acessórios,Power Bank 10000mAh,30.0,3,90.0

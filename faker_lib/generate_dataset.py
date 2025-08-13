@@ -10,11 +10,8 @@ locales = [
     "es_ES",
     "fr_FR",
     "de_DE",
-    "ja_JP",
-    "zh_CN",
     "it_IT",
     "ru_RU",
-    "ko_KR",
     "pt_PT",
 ]
 faker = Faker(locales)

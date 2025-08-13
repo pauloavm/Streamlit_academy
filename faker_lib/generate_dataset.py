@@ -93,6 +93,9 @@ def generate_sale_record(sale_id):
     }
 
 
+# Aqui o usuário insere o nome do arquivo
+nome_arquivo = input("Insira o nome do arquivo (ex: 'meu_arquivo.csv'): ")
+
 # Lógica para obter a quantidade de registros do usuário
 try:
     num_records_input = input("Insira a quantidade de registros que deseja criar: ")
@@ -103,8 +106,6 @@ except (ValueError, EOFError):
 sales_data = [generate_sale_record(i) for i in range(1, num_records + 1)]
 df = pd.DataFrame(sales_data)
 
-# NOVO CÓDIGO AQUI: Permite ao usuário inserir o nome do arquivo
-nome_arquivo = input("Insira o nome do arquivo (ex: 'meu_arquivo.csv'): ")
 
 # Garante que o nome do arquivo termine com a extensão .csv
 if not nome_arquivo.endswith(".csv"):

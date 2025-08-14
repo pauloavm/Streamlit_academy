@@ -222,7 +222,7 @@ else:
         st.plotly_chart(fig_mapa, use_container_width=True)
 
     with col2_clientes:
-        # Top 5 Clientes (agora ao lado do mapa)
+        # Top 5 Clientes
         st.subheader("Top 5 Clientes")
         top_clientes_vendas = (
             df_filtrado.groupby("Nome_Cliente")["Total_Venda"]

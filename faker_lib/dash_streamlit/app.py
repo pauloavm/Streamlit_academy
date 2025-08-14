@@ -23,8 +23,8 @@ st.markdown(
     .main .block-container{
         padding-top: 2rem;
         padding-right: 2rem;
-        padding-bottom: 2rem;
         padding-left: 2rem;
+        padding-bottom: 2rem;
     }
 
     /* Títulos */
@@ -61,13 +61,14 @@ st.markdown(
 )
 
 
-# Carregar o dataset
+# Carregar o dataset com cache para otimização
 @st.cache_data
 def load_data():
     try:
         return pd.read_csv("vendas_eletronicos.csv")
     except FileNotFoundError:
         return None
+
 
 df = load_data()
 
@@ -83,6 +84,7 @@ df["Data_Venda"] = pd.to_datetime(df["Data_Venda"])
 df["Ano"] = df["Data_Venda"].dt.year
 df["Mês"] = df["Data_Venda"].dt.month
 df["Trimestre"] = df["Data_Venda"].dt.quarter
+df["Hora"] = df["Data_Venda"].dt.hour
 
 
 # Título principal do dashboard
@@ -111,11 +113,20 @@ trimestres_selecionados = st.sidebar.multiselect(
     default=trimestres_disponiveis,
 )
 
+# Filtro por Categoria de Produto
+categorias_disponiveis = sorted(df["Categoria_Produto"].unique())
+categorias_selecionadas = st.sidebar.multiselect(
+    "Selecione a(s) Categoria(s)",
+    options=categorias_disponiveis,
+    default=categorias_disponiveis,
+)
+
 
 # Filtrar o DataFrame
 df_filtrado = df[
     (df["Ano"].isin(anos_selecionados))
     & (df["Trimestre"].isin(trimestres_selecionados))
+    & (df["Categoria_Produto"].isin(categorias_selecionadas))
 ]
 
 
@@ -126,8 +137,8 @@ else:
     # --- Visualizações ---
     st.header("Análise de Vendas")
 
-    # Criar colunas para colocar as métricas lado a lado
-    col1_metric, col2_metric = st.columns(2)
+    # Criar 3 colunas para as métricas
+    col1_metric, col2_metric, col3_metric = st.columns(3)
 
     with col1_metric:
         # Exibir o valor total de vendas como um KPI
@@ -142,7 +153,12 @@ else:
         else:
             st.metric(label="Ticket Médio por Venda", value="US$ 0.00")
 
-    # Criar colunas para colocar os gráficos lado a lado
+    with col3_metric:
+        # Calcular e exibir o número de clientes únicos
+        num_clientes_unicos = df_filtrado["ID_Cliente"].nunique()
+        st.metric(label="Clientes Únicos", value=num_clientes_unicos)
+
+    # Criar colunas para colocar os gráficos de produtos lado a lado
     col1_produtos, col2_produtos = st.columns(2)
 
     # Top 5 Produtos por Vendas (valor total)
@@ -185,7 +201,7 @@ else:
         )
         fig_prod_qtd.update_layout(yaxis={"categoryorder": "total ascending"})
         st.plotly_chart(fig_prod_qtd, use_container_width=True)
-    
+
     # Criar colunas para o mapa e o top 5 clientes
     col1_mapa, col2_clientes = st.columns(2)
 
@@ -221,27 +237,47 @@ else:
             title="Top 5 Clientes por Vendas",
             orientation="h",
             color="Nome_Cliente",
-            labels={"Total_Venda": "Vendas Totais ($)", "Nome_Cliente": "Nome do Cliente"},
+            labels={
+                "Total_Venda": "Vendas Totais ($)",
+                "Nome_Cliente": "Nome do Cliente",
+            },
             color_discrete_sequence=px.colors.qualitative.Bold,
         )
         fig_clientes.update_layout(yaxis={"categoryorder": "total ascending"})
         st.plotly_chart(fig_clientes, use_container_width=True)
 
+    # Criar colunas para os gráficos de tempo
+    col1_mes, col2_hora = st.columns(2)
 
-    st.subheader("Vendas Totais por Mês")
-    vendas_por_mes = (
-        df_filtrado.groupby(["Ano", "Mês"])["Total_Venda"].sum().reset_index()
-    )
-    vendas_por_mes["Data"] = (
-        vendas_por_mes["Ano"].astype(str) + "-" + vendas_por_mes["Mês"].astype(str)
-    )
-    fig_mes = px.bar(
-        vendas_por_mes,
-        x="Data",
-        y="Total_Venda",
-        title="Vendas Totais por Mês",
-        # color='Ano',
-        labels={"Data": "Ano-Mês", "Total_Venda": "Vendas Totais ($)"},
-        color_discrete_sequence=px.colors.qualitative.Plotly,
-    )
-    st.plotly_chart(fig_mes, use_container_width=True)
+    with col1_mes:
+        st.subheader("Vendas Totais por Mês")
+        vendas_por_mes = (
+            df_filtrado.groupby(["Ano", "Mês"])["Total_Venda"].sum().reset_index()
+        )
+        vendas_por_mes["Data"] = (
+            vendas_por_mes["Ano"].astype(str) + "-" + vendas_por_mes["Mês"].astype(str)
+        )
+        fig_mes = px.bar(
+            vendas_por_mes,
+            x="Data",
+            y="Total_Venda",
+            title="Vendas Totais por Mês",
+            labels={"Data": "Ano-Mês", "Total_Venda": "Vendas Totais ($)"},
+            color_discrete_sequence=px.colors.qualitative.Plotly,
+        )
+        st.plotly_chart(fig_mes, use_container_width=True)
+
+    with col2_hora:
+        # Vendas por Hora do Dia
+        st.subheader("Vendas por Hora do Dia")
+        vendas_por_hora = df_filtrado.groupby("Hora")["Total_Venda"].sum().reset_index()
+        fig_hora = px.bar(
+            vendas_por_hora,
+            x="Hora",
+            y="Total_Venda",
+            title="Vendas por Hora do Dia",
+            labels={"Hora": "Hora do Dia", "Total_Venda": "Vendas Totais ($)"},
+            color_discrete_sequence=px.colors.qualitative.Pastel,
+        )
+        fig_hora.update_layout(xaxis={"dtick": 1})
+        st.plotly_chart(fig_hora, use_container_width=True)

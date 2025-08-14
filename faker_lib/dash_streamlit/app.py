@@ -63,7 +63,7 @@ st.markdown(
 
 # Carregar o dataset
 try:
-    df = pd.read_csv("./dados/vendas_eletronicos.csv")
+    df = pd.read_csv("./vendas_eletronicos.csv")
 except FileNotFoundError:
     st.error(
         "Arquivo 'vendas_eletronicos.csv' não encontrado. Por favor, verifique se o arquivo está no mesmo diretório do script."

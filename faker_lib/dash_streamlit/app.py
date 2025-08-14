@@ -121,70 +121,70 @@ df_filtrado = df[
 
 # Mensagem de alerta se nenhum dado for encontrado
 if df_filtrado.empty:
-    st.warning("Nenhum dado encontrado para os filtros selecionados.")
+    st.warning("Nenhum dado encontrado para os filtros selecionados.")
 else:
-    # --- Visualizações ---
-    st.header("Análise de Vendas")
+    # --- Visualizações ---
+    st.header("Análise de Vendas")
 
-    # Criar colunas para colocar as métricas lado a lado
-    col1_metric, col2_metric = st.columns(2)
+    # Criar colunas para colocar as métricas lado a lado
+    col1_metric, col2_metric = st.columns(2)
 
-    with col1_metric:
-        # Exibir o valor total de vendas como um KPI
-        total_vendas = df_filtrado["Total_Venda"].sum()
-        st.metric(label="Total de Vendas", value=f"US$ {total_vendas:,.2f}")
+    with col1_metric:
+        # Exibir o valor total de vendas como um KPI
+        total_vendas = df_filtrado["Total_Venda"].sum()
+        st.metric(label="Total de Vendas", value=f"US$ {total_vendas:,.2f}")
 
-    with col2_metric:
-        # Calcular e exibir o ticket médio por venda
-        if not df_filtrado.empty:
-            ticket_medio = df_filtrado["Total_Venda"].mean()
-            st.metric(label="Ticket Médio por Venda", value=f"US$ {ticket_medio:,.2f}")
-        else:
-            st.metric(label="Ticket Médio por Venda", value="US$ 0.00")
+    with col2_metric:
+        # Calcular e exibir o ticket médio por venda
+        if not df_filtrado.empty:
+            ticket_medio = df_filtrado["Total_Venda"].mean()
+            st.metric(label="Ticket Médio por Venda", value=f"US$ {ticket_medio:,.2f}")
+        else:
+            st.metric(label="Ticket Médio por Venda", value="US$ 0.00")
 
-    # Criar colunas para colocar os gráficos lado a lado
-    col1_produtos, col2_produtos = st.columns(2)
+    # Criar colunas para colocar os gráficos lado a lado
+    col1_produtos, col2_produtos = st.columns(2)
 
-    # Top 5 Produtos por Vendas (valor total)
-    with col1_produtos:
-        st.subheader("Top 5 Produtos por Vendas")
-        top_produtos_valor = (
-            df_filtrado.groupby("Produto")["Total_Venda"]
-            .sum()
-            .nlargest(5)
-            .reset_index()
-        )
-        fig_prod_valor = px.bar(
-            top_produtos_valor,
-            x="Total_Venda",
-            y="Produto",
-            title="Top 5 Produtos por Vendas",
-            orientation="h",
-            color="Produto",
-            labels={"Total_Venda": "Vendas Totais ($)", "Produto": "Produto"},
-            color_discrete_sequence=px.colors.qualitative.Vivid,
-        )
-        fig_prod_valor.update_layout(yaxis={"categoryorder": "total ascending"})
-        st.plotly_chart(fig_prod_valor, use_container_width=True)
+    # Top 5 Produtos por Vendas (valor total)
+    with col1_produtos:
+        st.subheader("Top 5 Produtos por Vendas")
+        top_produtos_valor = (
+            df_filtrado.groupby("Produto")["Total_Venda"]
+            .sum()
+            .nlargest(5)
+            .reset_index()
+        )
+        fig_prod_valor = px.bar(
+            top_produtos_valor,
+            x="Total_Venda",
+            y="Produto",
+            title="Top 5 Produtos por Vendas",
+            orientation="h",
+            color="Produto",
+            labels={"Total_Venda": "Vendas Totais ($)", "Produto": "Produto"},
+            color_discrete_sequence=px.colors.qualitative.Vivid,
+        )
+        fig_prod_valor.update_layout(yaxis={"categoryorder": "total ascending"})
+        st.plotly_chart(fig_prod_valor, use_container_width=True)
 
-    # Top 5 Produtos por Quantidade Vendida
-    with col2_produtos:
-        st.subheader("Top 5 Produtos por Quantidade")
-        top_produtos_qtd = (
-            df_filtrado.groupby("Produto")["Quantidade"].sum().nlargest(5).reset_index()
-        )
-        fig_prod_qtd = px.bar(
-            top_produtos_qtd,
-            x="Quantidade",
-            y="Produto",
-            title="Top 5 Produtos por Quantidade Vendida",
-            orientation="h",
-            color="Produto",
-            labels={"Quantidade": "Quantidade Vendida", "Produto": "Produto"},
-            color_discrete_sequence=px.colors.qualitative.T10,
-        )
-        fig_prod_qtd.update_layout(yaxis={"categoryorder": "total ascending"})
-        st.plotly_chart(fig_prod_qtd, use_container_width=True)
+    # Top 5 Produtos por Quantidade Vendida
+    with col2_produtos:
+        st.subheader("Top 5 Produtos por Quantidade")
+        top_produtos_qtd = (
+            df_filtrado.groupby("Produto")["Quantidade"].sum().nlargest(5).reset_index()
+        )
+        fig_prod_qtd = px.bar(
+            top_produtos_qtd,
+            x="Quantidade",
+            y="Produto",
+            title="Top 5 Produtos por Quantidade Vendida",
+            orientation="h",
+            color="Produto",
+            labels={"Quantidade": "Quantidade Vendida", "Produto": "Produto"},
+            color_discrete_sequence=px.colors.qualitative.T10,
+        )
+        fig_prod_qtd.update_layout(yaxis={"categoryorder": "total ascending"})
+        st.plotly_chart(fig_prod_qtd, use_container_width=True)
     
     # Criar colunas para o mapa e o top 5 clientes
     col1_mapa, col2_clientes = st.columns(2)

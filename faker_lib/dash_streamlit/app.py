@@ -4,60 +4,60 @@ import plotly.express as px
 
 # Configuração da página
 st.set_page_config(
-    page_title="Dashboard de Vendas de Eletrônicos",
-    layout="wide",
-    initial_sidebar_state="expanded",
+    page_title="Dashboard de Vendas de Eletrônicos",
+    layout="wide",
+    initial_sidebar_state="expanded",
 )
 
 # Estilos CSS para um tema claro
 st.markdown(
-    """
-    <style>
-    /* Estilo para a página inteira: fundo claro e texto escuro */
-    body {
-        background-color: #f0f2f6; /* Fundo cinza claro */
-        color: #1a237e; /* Texto azul escuro */
-    }
-    
-    /* Container principal */
-    .main .block-container{
-        padding-top: 2rem;
-        padding-right: 2rem;
-        padding-bottom: 2rem;
-        padding-left: 2rem;
-    }
+    """
+    <style>
+    /* Estilo para a página inteira: fundo claro e texto escuro */
+    body {
+        background-color: #f0f2f6; /* Fundo cinza claro */
+        color: #1a237e; /* Texto azul escuro */
+    }
+    
+    /* Container principal */
+    .main .block-container{
+        padding-top: 2rem;
+        padding-right: 2rem;
+        padding-bottom: 2rem;
+        padding-left: 2rem;
+    }
 
-    /* Títulos */
-    h1, h2, h3, h4, h5, h6 {
-        color: #1a237e;
-    }
-    
-    /* Estilo da barra lateral para garantir fundo claro e texto escuro */
-    .st-emotion-cache-18ni4h0 {
-        background-color: #e3f2fd; /* Fundo azul claro para a sidebar */
-        color: #1a237e; /* Texto azul escuro */
-    }
+    /* Títulos */
+    h1, h2, h3, h4, h5, h6 {
+        color: #1a237e;
+    }
+    
+    /* Estilo da barra lateral para garantir fundo claro e texto escuro */
+    .st-emotion-cache-18ni4h0 {
+        background-color: #e3f2fd; /* Fundo azul claro para a sidebar */
+        color: #1a237e; /* Texto azul escuro */
+    }
 
-    /* Estilo para os gráficos (destaque) */
-    .plotly-graph-div {
-        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-        transition: 0.3s;
-        border-radius: 5px;
-        background-color: white;
-    }
-    
-    /* Estilo para a métrica de vendas */
-    div[data-testid="metric-container"] {
-        background-color: #e3f2fd;
-        border: 1px solid #1a237e;
-        padding: 5% 5% 5% 10%;
-        border-radius: 5px;
-        color: #1a237e;
-        overflow-wrap: break-word;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
+    /* Estilo para os gráficos (destaque) */
+    .plotly-graph-div {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        border-radius: 5px;
+        background-color: white;
+    }
+    
+    /* Estilo para a métrica de vendas */
+    div[data-testid="metric-container"] {
+        background-color: #e3f2fd;
+        border: 1px solid #1a237e;
+        padding: 5% 5% 5% 10%;
+        border-radius: 5px;
+        color: #1a237e;
+        overflow-wrap: break-word;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
 
 
@@ -97,25 +97,25 @@ st.sidebar.header("Filtros")
 # Filtro por Ano
 anos_disponiveis = sorted(df["Ano"].unique())
 anos_selecionados = st.sidebar.multiselect(
-    "Selecione o(s) Ano(s)",
-    options=anos_disponiveis,
-    default=anos_disponiveis,
+    "Selecione o(s) Ano(s)",
+    options=anos_disponiveis,
+    default=anos_disponiveis,
 )
 
 
 # Filtro por Trimestre
 trimestres_disponiveis = sorted(df["Trimestre"].unique())
 trimestres_selecionados = st.sidebar.multiselect(
-    "Selecione o(s) Trimestre(s)",
-    options=trimestres_disponiveis,
-    default=trimestres_disponiveis,
+    "Selecione o(s) Trimestre(s)",
+    options=trimestres_disponiveis,
+    default=trimestres_disponiveis,
 )
 
 
 # Filtrar o DataFrame
 df_filtrado = df[
-    (df["Ano"].isin(anos_selecionados))
-    & (df["Trimestre"].isin(trimestres_selecionados))
+    (df["Ano"].isin(anos_selecionados))
+    & (df["Trimestre"].isin(trimestres_selecionados))
 ]
 
 
